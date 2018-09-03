@@ -4,10 +4,10 @@
 	
 	use Illuminate\Database\Eloquent\Model;
 	
-	class ModuleTag extends Model
+	class ModuleReminderTag extends Model
 	{
 		
-		protected $table = 'module_tags';
+		protected $table = 'module_reminder_tags';
 		
 		/**
 		 * The attributes that are mass assignable.

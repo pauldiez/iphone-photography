@@ -3,7 +3,7 @@
 	
 	use Illuminate\Database\Seeder;
 	
-	use App\Models\ModuleTag;
+	use App\Models\ModuleReminderTag;
 	
 	class ModuleTagSeeder extends Seeder
 	{
@@ -152,7 +152,7 @@
 		public function run()
 		{
 			foreach (self::$module_tags as $module_tag) {
-				ModuleTag::insert($module_tag);
+				ModuleReminderTag::insert($module_tag);
 			}
 		}
 	}
