@@ -4,6 +4,7 @@
     
     
     use App\Http\Helpers\InfusionsoftHelper;
+    use App\Interfaces\ModuleReminderTagRepositoryInterface;
     use App\Interfaces\ModuleRepositoryInterface;
     use App\Interfaces\UserCRMRepositoryInterface;
     use App\Interfaces\UserRepositoryInterface;
@@ -27,19 +28,26 @@
         private $userCRMRepository;
         
         /**
-         * @var UserCRMRepositoryInterface
+         * @var ModuleRepositoryInterface
          */
-        private $moduleRepositoryInterface;
+        private $moduleRepository;
+        
+        /**
+         * @var ModuleReminderTagRepositoryInterface
+         */
+        private $moduleReminderTagRepository;
         
         public function __construct(
             UserRepositoryInterface $userRepository,
             UserCRMRepositoryInterface $userCRMRepository,
-            ModuleRepositoryInterface $moduleRepository
+            ModuleRepositoryInterface $moduleRepository,
+            ModuleReminderTagRepositoryInterface $moduleReminderTagRepository
         ) {
             
-            $this->userRepository    = $userRepository;
-            $this->userCRMRepository = $userCRMRepository;
-            $this->moduleRepository  = $moduleRepository;
+            $this->userRepository              = $userRepository;
+            $this->userCRMRepository           = $userCRMRepository;
+            $this->moduleRepository            = $moduleRepository;
+            $this->moduleReminderTagRepository = $moduleReminderTagRepository;
         }
         
         /**
@@ -66,18 +74,30 @@
                 ], 422);
             }
             
-            $crmUser               = $this->userCRMRepository->getByEmail($request->contact_email);
-            $crmUserCourses        = $this->userCRMRepository->getPurchasedCourses($crmUser);
-            $user                  = $this->userRepository->getByEmail($request->contact_email);
-            $purchasedModules      = $this->moduleRepository->getAllByCourse($crmUserCourses);
-            $completedModules      = $this->moduleRepository->getCompletedByUser($user);
-            $nextIncompleteModule = $this->moduleRepository->getNextIncomplete( user);
+            $crmUser              = $this->userCRMRepository->getByEmail($request->contact_email);
+            $crmUserCourses       = $this->userCRMRepository->getPurchasedCourses($crmUser);
+            $user                 = $this->userRepository->getByEmail($request->contact_email);
+            $purchasedModules     = $this->moduleRepository->getAllByCourse($crmUserCourses);
+            $completedModules     = $this->moduleRepository->getCompletedByUser($user);
+            $nextIncompleteModule = $this->moduleRepository->getNextIncomplete($purchasedModules, $completedModules);
+            $courseKey            = $nextIncompleteModule[0];
+            $moduleNumber         = $nextIncompleteModule[1];
+            $moduleReminderTag    = $this->moduleReminderTagRepository->getByModule($courseKey, $moduleNumber);
+            $response             = $this->userCRMRepository->addTag($crmUser, $moduleReminderTag->id);
+            
+            if ($response) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $moduleReminderTag->name
+                ], 201);
+            } else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'There was an error processing next module reminder.'
+                ], 500);
+            }
             
             
-            return response()->json([
-                'success' => true,
-                'message' => 'some message'
-            ], 201);
         }
         
         public function exampleCustomer()

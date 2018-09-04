@@ -10,11 +10,27 @@
     {
         
         /**
-         * @return ModuleReminderTag[]|\Illuminate\Database\Eloquent\Collection|mixed
+         * Get next module reminder tag
+         *
+         * @param string $courseKey
+         * @param int    $moduleNumber
+         *
+         * @return mixed|void
          */
-        public function getNext($email)
+        public function getByModule(string $courseKey, int $moduleNumber)
         {
-            //
+            
+            $likeSearchTerm    = "%{$courseKey} module {$moduleNumber}%";
+            $moduleReminderTag = ModuleReminderTag::where('name', 'like', $likeSearchTerm)->first();
+            
+            // if not results then fetch for completed tag
+            if (!$moduleReminderTag) {
+                $moduleReminderTag = ModuleReminderTag::where('name', 'like', '%completed%')->first()
+                    ->first();
+            }
+            
+            return $moduleReminderTag;
+            
         }
         
         /**
@@ -30,6 +46,7 @@
         
         /**
          * Create or update module reminder tags
+         *
          * @return bool|mixed
          */
         public function createOrUpdate()
@@ -37,7 +54,7 @@
             
             $module_reminder_tags = UserCRMRepository::getAllTags();
             foreach ($module_reminder_tags as $module_reminder_tag) {
-                ModuleReminderTag::updateOrCreate($module_reminder_tags);
+                ModuleReminderTag::updateOrCreate($module_reminder_tag);
             }
             
             return true;

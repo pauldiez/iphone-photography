@@ -28,10 +28,10 @@
         /**
          * Get next incomplete module
          *
-         * @param $purchasedModules
-         * @param $completedModules
+         * @param array $modulesByCourse
+         * @param array $completedModules
          *
          * @return mixed
          */
-        public function getNextIncomplete($purchasedModules, $completedModules);
+        public function getNextIncomplete(array $modulesByCourse, array $completedModules);
     }

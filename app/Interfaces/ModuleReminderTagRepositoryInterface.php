@@ -8,11 +8,12 @@
         /**
          * Get next module reminder tag
          *
-         * @param $user
+         * @param string $courseKey
+         * @param int    $moduleNumber
          *
          * @return mixed
          */
-        public function getNext($email);
+        public function getByModule(string $courseKey, int $moduleNumber);
         
         /**
          * Get all module reminder tags

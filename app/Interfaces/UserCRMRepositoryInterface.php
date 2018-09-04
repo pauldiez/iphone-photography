@@ -25,6 +25,9 @@
         /**
          * Add CRM user tag
          *
+         * @param $user
+         * @param $tag
+         *
          * @return mixed
          */
         public function addTag($user, $tag);

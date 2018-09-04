@@ -51,22 +51,22 @@
         /**
          * Add module reminder tag to CRM users account
          *
-         * @param $user
-         * @param $tag
+         * @param $crmUser
+         * @param $tagId
          *
          * @return bool|mixed
          */
-        public function addTag($user, $tag)
+        public function addTag($crmUser, $tagId)
         {
             
-            return $this->crmApi->addTag($user['Id'], $tag->id);
+            return $this->crmApi->addTag($crmUser['Id'], $tagId);
         }
         
         
         /**
          *  Get CRM user courses
          *
-         * @param $user
+         * @param $crmUser
          *
          * @return array|mixed
          */
