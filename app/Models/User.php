@@ -34,6 +34,6 @@
 		public function completed_modules()
 		{
 			
-			return $this->belongsToMany('App\Module', 'user_completed_modules');
+			return $this->belongsToMany('App\Models\Module', 'user_completed_modules');
 		}
 	}

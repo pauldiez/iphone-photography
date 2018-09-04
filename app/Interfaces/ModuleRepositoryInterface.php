@@ -2,29 +2,36 @@
     
     namespace App\Interfaces;
     
+    use App\Models\User;
+
     interface ModuleRepositoryInterface
     {
         
         /**
-         * Get next module reminder tag
+         * Get modules completed by user
          *
          * @param $user
          *
          * @return mixed
          */
-        public function get($email);
+        public function getCompletedByUser(User $user);
         
         /**
-         * Get all module reminder tags
+         * Get all modules
+         *
+         * @param array $courses
          *
          * @return mixed
          */
-        public function getAll();
+        public function getAllByCourse(array $courseKeys);
         
         /**
-         * Create or update module reminder tags
+         * Get next incomplete module
+         *
+         * @param $purchasedModules
+         * @param $completedModules
          *
          * @return mixed
          */
-        public function createOrUpdate();
+        public function getNextIncomplete($purchasedModules, $completedModules);
     }

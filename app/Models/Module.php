@@ -18,6 +18,7 @@
 		protected $fillable = [
 			'id',
 			'course_key',
-			'name'
+			'name',
+            'number'
 		];
 	}

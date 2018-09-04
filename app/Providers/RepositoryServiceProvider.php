@@ -5,9 +5,12 @@
     use App\Interfaces\ModuleReminderTagRepositoryInterface;
     use App\Interfaces\UserCRMRepositoryInterface;
     use App\Interfaces\UserRepositoryInterface;
-    use App\Repositories\ModuleReminderTagRepository;
+    use App\Interfaces\ModuleRepositoryInterface;
+    
     use App\Repositories\UserCRMRepository;
     use App\Repositories\UserRepository;
+    use App\Repositories\ModuleReminderTagRepository;
+    use App\Repositories\ModuleRepository;
     use Illuminate\Support\ServiceProvider;
     
     
@@ -33,6 +36,11 @@
             $this->app->bind(
                 ModuleReminderTagRepositoryInterface::class,
                 ModuleReminderTagRepository::class
+            );
+            
+            $this->app->bind(
+                ModuleRepositoryInterface::class,
+                ModuleRepository::class
             );
             
         }

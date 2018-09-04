@@ -4,6 +4,7 @@
     
     
     use App\Http\Helpers\InfusionsoftHelper;
+    use App\Interfaces\ModuleRepositoryInterface;
     use App\Interfaces\UserCRMRepositoryInterface;
     use App\Interfaces\UserRepositoryInterface;
     use App\Models\Module;
@@ -25,13 +26,20 @@
          */
         private $userCRMRepository;
         
+        /**
+         * @var UserCRMRepositoryInterface
+         */
+        private $moduleRepositoryInterface;
+        
         public function __construct(
             UserRepositoryInterface $userRepository,
-            UserCRMRepositoryInterface $userCRMRepository
+            UserCRMRepositoryInterface $userCRMRepository,
+            ModuleRepositoryInterface $moduleRepository
         ) {
             
             $this->userRepository    = $userRepository;
             $this->userCRMRepository = $userCRMRepository;
+            $this->moduleRepository  = $moduleRepository;
         }
         
         /**
@@ -51,22 +59,19 @@
             if ($validator->fails()) {
                 $error_message = $validator->errors()->first();
                 
+                // return error
                 return response()->json([
                     'success' => false,
                     'message' => $error_message
                 ], 422);
             }
             
-            $crmUser = $this->userCRMRepository->getByEmail($request->contact_email);
-            $crmUserCourses = $this->userCRMRepository->getPurchasedCourses($crmUser);
-            $user    = $this->userRepository->getByEmail($request->contact_email);
-            // TODO - get all courses
-            // TODO - get all completed modules
-            // TODO - determine next course reminder
-            
-            print_r($crmUser);
-            print_r($user);
-            print_r($crmUserCourses);
+            $crmUser               = $this->userCRMRepository->getByEmail($request->contact_email);
+            $crmUserCourses        = $this->userCRMRepository->getPurchasedCourses($crmUser);
+            $user                  = $this->userRepository->getByEmail($request->contact_email);
+            $purchasedModules      = $this->moduleRepository->getAllByCourse($crmUserCourses);
+            $completedModules      = $this->moduleRepository->getCompletedByUser($user);
+            $nextIncompleteModule = $this->moduleRepository->getNextIncomplete( user);
             
             
             return response()->json([
