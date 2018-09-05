@@ -30,7 +30,7 @@ At first, I decided to build this project using repositories and interfaces.
 However, after reevaluating the scope of this project, I decided against that approach and refactored 
 the repository logic into models, as I felt the additional layers were unnecessary given the task at hand.
 
-If I had to create a repository,  I perhaps would have created one to refactor some of the controller logic out. 
+If I had to create a repository, I perhaps would have created one to refactor some of the controller logic out. 
 
 Though, for easy consumption, I wanted the code to be straight forward and as simplistic as possible, given the time I had. 
 
