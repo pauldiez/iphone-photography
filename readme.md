@@ -23,8 +23,8 @@ Note: If you have a preferred way to run a laravel project, free feel to ignore 
 
 ## Comments
 
-Laravel is one of my favorite frameworks and I've been following it since its infancy. 
-This was my first time working in the framework and I enjoyed developing in it.    
+Laravel is one of my favorite frameworks! I've been following it since its infancy. 
+This was my first time working in the framework and I very much enjoyed it.    
 
 At first, I decided to build this project using repositories and interfaces. 
 However, after reevaluating the scope of this project, I decided against that approach and refactored 
