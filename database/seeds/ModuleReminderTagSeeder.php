@@ -1,6 +1,5 @@
 <?php
     
-    
     use App\Models\ModuleReminderTag;
     use Illuminate\Database\Seeder;
     
@@ -152,7 +151,7 @@
         {
             
             foreach (self::$module_reminder_tags as $module_reminder_tag) {
-                ModuleReminderTag::insert([
+                ModuleReminderTag::updateOrCreate([
                     'id'   => $module_reminder_tag['id'],
                     'name' => $module_reminder_tag['name']
                 ]);

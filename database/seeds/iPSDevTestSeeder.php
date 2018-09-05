@@ -1,9 +1,9 @@
 <?php
-
-use Illuminate\Database\Seeder;
-use App\Module;
-
-class iPSDevTestSeeder extends Seeder
+    
+    use App\Models\Module;
+    use Illuminate\Database\Seeder;
+    
+    class iPSDevTestSeeder extends Seeder
 {
     /**
      * Run the database seeds.

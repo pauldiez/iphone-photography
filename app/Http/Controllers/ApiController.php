@@ -2,52 +2,22 @@
     
     namespace App\Http\Controllers;
     
-    
     use App\Http\Helpers\InfusionsoftHelper;
-    use App\Interfaces\ModuleReminderTagRepositoryInterface;
-    use App\Interfaces\ModuleRepositoryInterface;
-    use App\Interfaces\UserCRMRepositoryInterface;
-    use App\Interfaces\UserRepositoryInterface;
+    use App\Http\Requests\ModuleReminderAssignerRequest;
     use App\Models\Module;
+    use App\Models\ModuleReminderTag;
     use App\Models\User;
     use Illuminate\Http\Request;
-    use Validator;
-    
     
     class ApiController extends Controller
     {
         
-        /**
-         * @var UserRepositoryInterface
-         */
-        private $userRepository;
+        public $infusionSoftSDK;
         
-        /**
-         * @var UserCRMRepositoryInterface
-         */
-        private $userCRMRepository;
-        
-        /**
-         * @var ModuleRepositoryInterface
-         */
-        private $moduleRepository;
-        
-        /**
-         * @var ModuleReminderTagRepositoryInterface
-         */
-        private $moduleReminderTagRepository;
-        
-        public function __construct(
-            UserRepositoryInterface $userRepository,
-            UserCRMRepositoryInterface $userCRMRepository,
-            ModuleRepositoryInterface $moduleRepository,
-            ModuleReminderTagRepositoryInterface $moduleReminderTagRepository
-        ) {
+        public function __construct(InfusionsoftHelper $infusionSoftSDK)
+        {
             
-            $this->userRepository              = $userRepository;
-            $this->userCRMRepository           = $userCRMRepository;
-            $this->moduleRepository            = $moduleRepository;
-            $this->moduleReminderTagRepository = $moduleReminderTagRepository;
+            $this->infusionSoftSDK = $infusionSoftSDK;
         }
         
         /**
@@ -55,49 +25,56 @@
          *
          * @return \Illuminate\Http\JsonResponse
          */
-        public function moduleReminderAssigner(Request $request)
+        public function moduleReminderAssigner(ModuleReminderAssignerRequest $request)
         {
             
-            // set up a request validator to make sure we have an email
-            $validator = Validator::make($request->json()->all(), [
-                'contact_email' => 'required|email'
-            ]);
+            // get infusionSoft user
+            $crmUser = $this->infusionSoftSDK->getContact($request->contact_email);
             
-            // check for errors
-            if ($validator->fails()) {
-                $error_message = $validator->errors()->first();
-                
-                // return error
-                return response()->json([
-                    'success' => false,
-                    'message' => $error_message
-                ], 422);
+            // get purchases courses
+            $purchasedCourses = explode(',', $crmUser['_Products']);
+            
+            // get purchased modules for each course
+            $purchasedModulesByCourse = Module::getAllByCourse($purchasedCourses);
+            
+            // get the users completed modules thus far
+            $user             = User::where('email', $request->contact_email)->first();
+            $completedModules = Module::getCompletedByUser($user);
+            
+            // find the next incomplete module to consume
+            $nextIncompleteCourseModule = Module::getNextIncomplete($purchasedModulesByCourse, $completedModules);
+            
+            // get the respective module reminder tag, based passed in course module
+            list($courseKey, $moduleNumber) = $nextIncompleteCourseModule;
+            $moduleReminderTag = ModuleReminderTag::getByCourseAndModule($courseKey, $moduleNumber);
+            
+            // add module reminder tag to users infusionSoft account
+            $this->infusionSoftSDK->addTag($crmUser['Id'], $moduleReminderTag->id);
+            
+            return response()->json([
+                'success' => true,
+                'message' => $moduleReminderTag->name
+            ], 201);
+            
+        }
+        
+        /**
+         * Populate (create or update) module reminder tags
+         *
+         * @return bool|mixed
+         */
+        public function populateModuleReminderTags()
+        {
+            // get all tags from infusionSoftSDK and insert them into table
+            $module_reminder_tags = $this->infusionSoftSDK->getAllTags()->toArray();
+            foreach ($module_reminder_tags as $module_reminder_tag) {
+                ModuleReminderTag::updateOrCreate([
+                    'id'   => $module_reminder_tag['id'],
+                    'name' => $module_reminder_tag['name']
+                ]);
             }
             
-            $crmUser              = $this->userCRMRepository->getByEmail($request->contact_email);
-            $crmUserCourses       = $this->userCRMRepository->getPurchasedCourses($crmUser);
-            $user                 = $this->userRepository->getByEmail($request->contact_email);
-            $purchasedModules     = $this->moduleRepository->getAllByCourse($crmUserCourses);
-            $completedModules     = $this->moduleRepository->getCompletedByUser($user);
-            $nextIncompleteModule = $this->moduleRepository->getNextIncomplete($purchasedModules, $completedModules);
-            $courseKey            = $nextIncompleteModule[0];
-            $moduleNumber         = $nextIncompleteModule[1];
-            $moduleReminderTag    = $this->moduleReminderTagRepository->getByModule($courseKey, $moduleNumber);
-            $response             = $this->userCRMRepository->addTag($crmUser, $moduleReminderTag->id);
-            
-            if ($response) {
-                return response()->json([
-                    'success' => true,
-                    'message' => $moduleReminderTag->name
-                ], 201);
-            } else{
-                return response()->json([
-                    'success' => false,
-                    'message' => 'There was an error processing next module reminder.'
-                ], 500);
-            }
-            
-            
+            return response()->json($module_reminder_tags, 201);
         }
         
         public function exampleCustomer()

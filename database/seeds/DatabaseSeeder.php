@@ -1,17 +1,19 @@
 <?php
-
-use Illuminate\Database\Seeder;
-
-class DatabaseSeeder extends Seeder
-{
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
-    public function run()
+    
+    use Illuminate\Database\Seeder;
+    
+    class DatabaseSeeder extends Seeder
     {
-         $this->call(iPSDevTestSeeder::class);
-         $this->call(ModuleReminderTagSeeder::class);
+        
+        /**
+         * Seed the application's database.
+         *
+         * @return void
+         */
+        public function run()
+        {
+            
+            $this->call(iPSDevTestSeeder::class);
+            $this->call(ModuleReminderTagSeeder::class);
+        }
     }
-}
