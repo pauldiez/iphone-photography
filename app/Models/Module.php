@@ -22,6 +22,7 @@
             'number'
         ];
         
+        
         /**
          * Get all modules by course
          *
@@ -56,6 +57,7 @@
             return $allModulesByCourse;
             
         }
+        
         
         /**
          * Get modules completed by user

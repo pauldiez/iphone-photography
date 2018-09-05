@@ -20,6 +20,7 @@
             $this->infusionSoftSDK = $infusionSoftSDK;
         }
         
+        
         /**
          * @param Request $request
          *

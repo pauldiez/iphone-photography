@@ -15,27 +15,29 @@ Note: If you have a preferred way to run a laravel project, free feel to ignore 
 1. `php artisan db:seed`
 1. Open browser:
 1. http://0.0.0.0:80/authorize_infusionsoft
-1. Follow the link and authenticate and authorize
+1. Follow the link, authenticate and authorize
 1. [POST] http://0.0.0.0:80/api/create_customer
-1. [POST] http://0.0.0.0:80/api/module_reminder_assigner
+1. [POST] http://0.0.0.0:80/api/module_reminder_assigner ['contact_email'=> required]
 
 
 
 ## Comments
 
 Laravel is one of my favorite frameworks and I've been following it since its infancy. 
-I really enjoyed developing in it as this was my first time working in the framework.    
+This was my first time working in the framework and I enjoyed developing in it.    
 
 At first, I decided to build this project using repositories and interfaces. 
 However, after reevaluating the scope of this project, I decided against that approach and refactored 
 the repository logic into models, as I felt the additional layers were unnecessary given the task at hand.
 
-If I had to create a repository,  I would have perhaps created one to refactor some of the controller logic out. 
+If I had to create a repository,  I perhaps would have created one to refactor some of the controller logic out. 
 
 Though, for easy consumption, I wanted the code to be straight forward and as simplistic as possible, given the time I had. 
 
 I'm usually one to follow suite of a current project design and coding conventions and usually make architectural decisions 
 based on team input and approval. 
+
+
 
 
 
