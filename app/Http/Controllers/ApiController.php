@@ -58,6 +58,7 @@
             
         }
         
+        
         /**
          * Populate (create or update) module reminder tags
          *
@@ -65,6 +66,7 @@
          */
         public function populateModuleReminderTags()
         {
+            
             // get all tags from infusionSoftSDK and insert them into table
             $module_reminder_tags = $this->infusionSoftSDK->getAllTags()->toArray();
             foreach ($module_reminder_tags as $module_reminder_tag) {
@@ -77,6 +79,12 @@
             return response()->json($module_reminder_tags, 201);
         }
         
+        
+        /**
+         * Create example customer
+         *
+         * @return mixed
+         */
         public function exampleCustomer()
         {
             

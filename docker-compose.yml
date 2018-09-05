@@ -6,8 +6,12 @@ web:
         - ./:/var/www
     links:
         - db
-
-
+    environment:
+        DB_HOST: db
+        DB_DATABASE: ips-test
+        DB_USERNAME: bucho
+        DB_PASSWORD: bucho
+        DB_CONNECTION: mysql
 
 db:
     image: mysql
@@ -16,15 +20,8 @@ db:
     volumes:
         - ./data:/var/lib/mysql
     environment:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_ALLOW_EMPTY_PASSWORD: 1
-        MYSQL_RANDOM_ROOT_PASSWORD: root
-#        # with mysql
+        # with mysql
+        MYSQL_ROOT_PASSWORD: bucho
         MYSQL_DATABASE: ips-test
-        MYSQL_USER: paul
-        MYSQL_PASSWORD: paul
-
-        # with postgres
-        POSTGRES_DB: ips-test
-        POSTGRES_USER: paul
-        POSTGRES_PASSWORD: paul
+        MYSQL_USER: bucho
+        MYSQL_PASSWORD: bucho
