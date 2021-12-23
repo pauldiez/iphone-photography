@@ -34,8 +34,7 @@ If I had to create a repository, I perhaps would have created one to refactor so
 
 Though, for easy consumption, I wanted the code to be straight forward and as simplistic as possible, given the time I had. 
 
-I'm usually one to follow suite of a current project design and coding conventions and usually make architectural decisions 
-based on team input and approval. 
+I'm usually one to follow suite of a team/project coding conventions.
 
 
 
